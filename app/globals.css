@@ -1,0 +1,65 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background-color: #ede9f7;
+  --text-color: #333333;
+  --card-background: #f9f9f9;
+  --primary-color: #6b46c1;
+  --diamond-bg-color: #fff6e3; /* Light yellow */
+  --diamond-border-color: #ffa500; /* Orange */
+  --diamond-text-color: #ffa500; /* Orange */
+}
+
+.dark {
+  --background-color: black;
+  --text-color: #eaeaea;
+  --card-background: #2e2e2e;
+  --primary-color: #9f7aea;
+  --diamond-bg-color: #6f5da8; /* Dark theme background */
+  --diamond-border-color: #ccbdfc; /* Dark theme border */
+  --diamond-text-color: #ccbdfc; /* Dark theme text */
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  @apply font-zilla-slab;
+}
+
+.diamond-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background-color: var(--diamond-bg-color); /* Use variable for background */
+  border: 2px solid var(--diamond-border-color); /* Use variable for border */
+  color: var(--diamond-text-color); /* Use variable for text */
+  font-weight: bold;
+  transform: rotate(45deg); /* Rotate to make it diamond-shaped */
+  font-size: 18px;
+  margin: 10px; /* Optional for spacing */
+}
+
+.diamond-number span {
+  transform: rotate(-45deg); /* Rotate text back to normal */
+}
+
+
+/* For most browsers */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+
+/* For Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
