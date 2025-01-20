@@ -41,7 +41,7 @@ const DelayedUnstakeOverlay = ({ onClose }) => {
                 <p className="font-semibold text-[#1F0B35] dark:text-[#F8EBD0]">
                   Manually deactivate your stake account by clicking on the
                   "Deactivate" button on the
-                  <a href="#" className="text-[#6F5DA8]">
+                  <a href="/manage" className="text-[#6F5DA8]">
                     {" "}
                     Manage Stake Accounts
                   </a>{" "}
