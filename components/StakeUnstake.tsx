@@ -99,6 +99,10 @@ export default function StakeUnstakeComponent({
     }
   };
 
+  useEffect(() => {
+    setStakeAmount("");
+  }, [stake]);
+
   const handleUnstakeSOL = async () => {
     if (
       !stakeAmount ||
@@ -461,7 +465,7 @@ export default function StakeUnstakeComponent({
                     min="0"
                   />
                   <div className="text-sm text-[#6F5DA8] dark:text-[#6F5DA8]">
-                    {(Number(stakeAmount) * solPrice).toFixed(2)}
+                    {/* {(Number(stakeAmount) * solPrice).toFixed(2)} */}0.00
                   </div>
                 </div>
               </div>
