@@ -18,7 +18,7 @@ import {
   getAssociatedTokenAddress,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-import { initConfig } from "../solana/initConfig";
+import { initConfig } from "../solana/solistic/initConfig";
 
 type TStakeUnStake = {
   successSignature: string;

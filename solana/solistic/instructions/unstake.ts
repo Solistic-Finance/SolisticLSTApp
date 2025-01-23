@@ -1,6 +1,6 @@
 import { BN } from "bn.js";
 // import { connection, contractAddr, program } from "./config";
-import { getStateAccountData } from "./getStateAccountData";
+import { getStateAccountData } from "../getters/getStateAccountData";
 import {
   ComputeBudgetProgram,
   Connection,
@@ -12,7 +12,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { Wallet } from "@solana/wallet-adapter-react";
-import { initConfig } from "./initConfig";
+import { initConfig } from "../initConfig";
 
 export async function unstake(
   sSolAmount: string,

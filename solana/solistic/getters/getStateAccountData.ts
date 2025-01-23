@@ -1,7 +1,7 @@
 import { config } from "dotenv";
 import { PublicKey } from "@solana/web3.js";
 import { Program } from "@coral-xyz/anchor";
-import { SolisticStaking } from "../targets/types/solistic_staking";
+import { SolisticStaking } from "../../../targets/types/solistic_staking";
 config();
 
 async function getStateAccountData(program: Program<SolisticStaking>) {

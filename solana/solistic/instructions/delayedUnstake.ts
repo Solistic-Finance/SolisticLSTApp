@@ -1,5 +1,5 @@
 import { BN } from "bn.js";
-import { getStateAccountData } from "./getStateAccountData";
+import { getStateAccountData } from "../getters/getStateAccountData";
 import {
   ComputeBudgetProgram,
   Keypair,
@@ -14,9 +14,9 @@ import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { Wallet } from "@solana/wallet-adapter-react";
-import { initConfig } from "./initConfig";
+import { initConfig } from "../initConfig";
 
-export async function claim(
+export async function delayedUnstake(
   amount: string,
   userPublicKey: PublicKey,
   wallet: Wallet,
@@ -62,12 +62,12 @@ export async function claim(
     );
 
     // set priority fees
-    // const setComputeUnitLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
-    //   units: priorityFee ? 100_000 : 100_000,
-    // });
-    // const setComputeUnitPriceIx = ComputeBudgetProgram.setComputeUnitPrice({
-    //   microLamports: priorityFee ? 30 : 30, // example priority fee: 2 micro-lamports per CU
-    // });
+    const setComputeUnitLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
+      units: priorityFee ? 100_000 : 100_000,
+    });
+    const setComputeUnitPriceIx = ComputeBudgetProgram.setComputeUnitPrice({
+      microLamports: priorityFee ? 30 : 30, // example priority fee: 2 micro-lamports per CU
+    });
 
     // transaction.add(setComputeUnitLimitIx, setComputeUnitPriceIx);
 
