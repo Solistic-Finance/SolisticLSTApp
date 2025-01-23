@@ -186,10 +186,11 @@ export default function StakeUnstakeComponent({
       setStakeAmount("");
     }
   };
-  console.log("stakeamoun", stakeAmount);
+
   useEffect(() => {
+    let intervalId;
+  
     const fetchBalance = async () => {
-      // fetching balance from wallet
       try {
         if (publicKey && connected && wallet) {
           const { connection } = initConfig(wallet, publicKey);
@@ -202,16 +203,37 @@ export default function StakeUnstakeComponent({
         console.error("Error fetching balance:", err);
       }
     };
-
+  
+    // Fetch balance immediately
     fetchBalance();
-  }, [publicKey, connected]);
+  
+    // Set up interval to fetch balance every 5 seconds
+    if (publicKey && connected && wallet) {
+      intervalId = setInterval(fetchBalance, 5000);
+    }
+  
+    return () => {
+      // Clear interval on component unmount or dependency change
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [publicKey, connected, wallet]);
+  
 
   useEffect(() => {
+    let intervalId;
+  
     const fetchSolBalance = async (connection, program) => {
       try {
+        if (!publicKey || !connected || !wallet) {
+          setSSolBalance("0"); // Reset balance if wallet is disconnected
+          return;
+        }
+  
         const stateAccountData = await getStateAccountData(program);
         const sSolMint = stateAccountData.ssolMint;
-
+  
         const sSolAccount = await getAssociatedTokenAddress(
           sSolMint,
           publicKey,
@@ -219,26 +241,45 @@ export default function StakeUnstakeComponent({
           TOKEN_PROGRAM_ID,
           ASSOCIATED_TOKEN_PROGRAM_ID
         );
+  
         const accountExists = await connection.getAccountInfo(sSolAccount);
         if (!accountExists) {
           setSSolBalance("0");
+          return;
         }
-        const sSolBalance = await connection.getTokenAccountBalance(
-          sSolAccount
-        );
+  
+        const sSolBalance = await connection.getTokenAccountBalance(sSolAccount);
         const sSolBalanceValue = sSolBalance.value.uiAmountString;
         setSSolBalance(sSolBalanceValue);
       } catch (error) {
         console.log("Error fetching sSol price for public Key", error);
       }
     };
-
+  
     if (wallet) {
       const { connection, program } = initConfig(wallet, publicKey);
-
+  
+      // Fetch balance immediately
       fetchSolBalance(connection, program);
+  
+      // Set up interval to fetch balance every 5 seconds
+      intervalId = setInterval(() => {
+        fetchSolBalance(connection, program);
+      }, 5000);
+    } else {
+      // Reset balance if wallet is disconnected
+      setSSolBalance("0");
     }
+  
+    return () => {
+      // Clear interval on component unmount or dependency change
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, [publicKey, connected, wallet]);
+  
+  
 
   useEffect(() => {
     const fetchSolPrice = async () => {
