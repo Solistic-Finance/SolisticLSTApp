@@ -36,24 +36,19 @@ export type SolisticStaking = {
           "isSigner": false
         },
         {
-          "name": "liqPool",
-          "accounts": [
-            {
-              "name": "lpMint",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "solLegPda",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "ssolLeg",
-              "isMut": false,
-              "isSigner": false
-            }
-          ]
+          "name": "lpMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "solLegPda",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ssolLeg",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "treasurySsolAccount",
@@ -957,73 +952,68 @@ export type SolisticStaking = {
       "name": "updateActive",
       "accounts": [
         {
-          "name": "common",
-          "accounts": [
-            {
-              "name": "state",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "stakeList",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "stakeAccount",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "stakeWithdrawAuthority",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "reservePda",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "ssolMint",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "ssolMintAuthority",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "treasurySsolAccount",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "clock",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "stakeHistory",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "stakeProgram",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "tokenProgram",
-              "isMut": false,
-              "isSigner": false
-            }
-          ]
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeList",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "validatorList",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeWithdrawAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "reservePda",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ssolMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ssolMintAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "treasurySsolAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "clock",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "stakeHistory",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "stakeProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
           "isSigner": false
         }
       ],
@@ -1042,73 +1032,68 @@ export type SolisticStaking = {
       "name": "updateDeactivated",
       "accounts": [
         {
-          "name": "common",
-          "accounts": [
-            {
-              "name": "state",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "stakeList",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "stakeAccount",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "stakeWithdrawAuthority",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "reservePda",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "ssolMint",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "ssolMintAuthority",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "treasurySsolAccount",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "clock",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "stakeHistory",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "stakeProgram",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "tokenProgram",
-              "isMut": false,
-              "isSigner": false
-            }
-          ]
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeList",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeWithdrawAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "reservePda",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ssolMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ssolMintAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "treasurySsolAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "operationalSolAccount",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "clock",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "stakeHistory",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "stakeProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -4476,24 +4461,19 @@ export const IDL: SolisticStaking = {
           "isSigner": false
         },
         {
-          "name": "liqPool",
-          "accounts": [
-            {
-              "name": "lpMint",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "solLegPda",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "ssolLeg",
-              "isMut": false,
-              "isSigner": false
-            }
-          ]
+          "name": "lpMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "solLegPda",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ssolLeg",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "treasurySsolAccount",
@@ -5397,73 +5377,68 @@ export const IDL: SolisticStaking = {
       "name": "updateActive",
       "accounts": [
         {
-          "name": "common",
-          "accounts": [
-            {
-              "name": "state",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "stakeList",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "stakeAccount",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "stakeWithdrawAuthority",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "reservePda",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "ssolMint",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "ssolMintAuthority",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "treasurySsolAccount",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "clock",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "stakeHistory",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "stakeProgram",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "tokenProgram",
-              "isMut": false,
-              "isSigner": false
-            }
-          ]
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeList",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "validatorList",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeWithdrawAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "reservePda",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ssolMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ssolMintAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "treasurySsolAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "clock",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "stakeHistory",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "stakeProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
           "isSigner": false
         }
       ],
@@ -5482,73 +5457,68 @@ export const IDL: SolisticStaking = {
       "name": "updateDeactivated",
       "accounts": [
         {
-          "name": "common",
-          "accounts": [
-            {
-              "name": "state",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "stakeList",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "stakeAccount",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "stakeWithdrawAuthority",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "reservePda",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "ssolMint",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "ssolMintAuthority",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "treasurySsolAccount",
-              "isMut": true,
-              "isSigner": false
-            },
-            {
-              "name": "clock",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "stakeHistory",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "stakeProgram",
-              "isMut": false,
-              "isSigner": false
-            },
-            {
-              "name": "tokenProgram",
-              "isMut": false,
-              "isSigner": false
-            }
-          ]
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeList",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakeWithdrawAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "reservePda",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ssolMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ssolMintAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "treasurySsolAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "operationalSolAccount",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "clock",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "stakeHistory",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "stakeProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
           "isSigner": false
         },
         {

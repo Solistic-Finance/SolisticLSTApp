@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "solistic-fe",
+      name: "solistic-lst-fe",
       script: "npm",
       args: "start",
       instances: 1,

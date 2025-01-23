@@ -83,12 +83,12 @@ export async function deposit(
     console.log("Account exists : ", accountExists);
     const transaction = new Transaction();
     // set priority fees
-    // const setComputeUnitLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
-    //   units: priorityFee ? 100_000 : 100_000,
-    // });
-    // const setComputeUnitPriceIx = ComputeBudgetProgram.setComputeUnitPrice({
-    //   microLamports: priorityFee ? 30 : 30, // example priority fee: 2 micro-lamports per CU
-    // });
+    const setComputeUnitLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
+      units: priorityFee ? 100_000 : 100_000,
+    });
+    const setComputeUnitPriceIx = ComputeBudgetProgram.setComputeUnitPrice({
+      microLamports: priorityFee ? 30 : 30, // example priority fee: 2 micro-lamports per CU
+    });
 
     // transaction.add(setComputeUnitLimitIx, setComputeUnitPriceIx);
     if (!accountExists) {
