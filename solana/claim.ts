@@ -16,7 +16,7 @@ import {
 import { Wallet } from "@solana/wallet-adapter-react";
 import { initConfig } from "./initConfig";
 
-export async function delayedUnstake(
+export async function claim(
   amount: string,
   userPublicKey: PublicKey,
   wallet: Wallet,
@@ -62,12 +62,12 @@ export async function delayedUnstake(
     );
 
     // set priority fees
-    const setComputeUnitLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
-      units: priorityFee ? 100_000 : 100_000,
-    });
-    const setComputeUnitPriceIx = ComputeBudgetProgram.setComputeUnitPrice({
-      microLamports: priorityFee ? 30 : 30, // example priority fee: 2 micro-lamports per CU
-    });
+    // const setComputeUnitLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
+    //   units: priorityFee ? 100_000 : 100_000,
+    // });
+    // const setComputeUnitPriceIx = ComputeBudgetProgram.setComputeUnitPrice({
+    //   microLamports: priorityFee ? 30 : 30, // example priority fee: 2 micro-lamports per CU
+    // });
 
     // transaction.add(setComputeUnitLimitIx, setComputeUnitPriceIx);
 
