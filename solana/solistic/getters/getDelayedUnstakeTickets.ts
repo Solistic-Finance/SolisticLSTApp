@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import { PublicKey } from "@solana/web3.js";
-import { SolisticStaking } from "../targets/types/solistic_staking";
+import { SolisticStaking } from "../../../targets/types/solistic_staking";
 import { Program } from "@coral-xyz/anchor";
 config();
 
@@ -9,6 +9,7 @@ async function getDelayedUnstakeTickets(program: Program<SolisticStaking>, user:
     const ticketAccountData = await program.account.ticketAccountData.all();
     const tickets = ticketAccountData.filter((ticket) => ticket.account.beneficiary === user);
     return tickets.map((ticket) => ({
+      ticketAccount: ticket.publicKey,
       lamportsAmount: ticket.account.lamportsAmount,
       createdEpoch: ticket.account.createdEpoch,
     }));

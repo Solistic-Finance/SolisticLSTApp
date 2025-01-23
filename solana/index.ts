@@ -1,6 +1,6 @@
 // export * from './config';
-export * from './getStateAccountData';
-export * from './deposit';
+export * from './solistic/getters/getStateAccountData';
+export * from './solistic/instructions/deposit';
 export * from './createAtaTx';
-export * from './unstake';
-export * from './delayedUnstake';
+export * from './solistic/instructions/unstake';
+export * from './solistic/instructions/delayedUnstake';

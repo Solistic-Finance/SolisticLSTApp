@@ -6,8 +6,8 @@ import {
   VersionedTransaction,
   Keypair,
 } from "@solana/web3.js";
-import { SolisticStaking, IDL } from "../targets/types/solistic_staking";
-import idl from "../targets/idl/solistic_staking.json";
+import { SolisticStaking, IDL } from "../../targets/types/solistic_staking";
+import idl from "../../targets/idl/solistic_staking.json";
 
 interface AnchorCompatibleWallet {
   publicKey: PublicKey | null;

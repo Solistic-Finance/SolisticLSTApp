@@ -1,8 +1,8 @@
 import { BN } from "bn.js";
 // import { connection, contractAddr, program } from "./config";
-import { getStateAccountData } from "./getStateAccountData";
+import { getStateAccountData } from "../getters/getStateAccountData";
 import { ComputeBudgetProgram, PublicKey, Transaction } from "@solana/web3.js";
-import { createAtaTx } from "./createAtaTx";
+import { createAtaTx } from "../../createAtaTx";
 import {
   createAssociatedTokenAccountInstruction,
   getAssociatedTokenAddressSync,
@@ -11,7 +11,7 @@ import {
 } from "@solana/spl-token";
 import { Wallet, useWallet } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
-import { initConfig } from "./initConfig";
+import { initConfig } from "../initConfig";
 
 export async function deposit(
   amount: string,
