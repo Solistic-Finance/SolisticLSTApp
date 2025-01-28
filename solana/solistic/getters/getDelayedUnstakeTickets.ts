@@ -7,7 +7,7 @@ config();
 async function getDelayedUnstakeTickets(program: Program<SolisticStaking>, user: PublicKey) {
   try {
     const ticketAccountData = await program.account.ticketAccountData.all();
-    const tickets = ticketAccountData.filter((ticket) => ticket.account.beneficiary === user);
+    const tickets = ticketAccountData.filter((ticket) => ticket.account.beneficiary.toBase58() === user.toBase58());
     return tickets.map((ticket) => ({
       ticketAccount: ticket.publicKey,
       lamportsAmount: ticket.account.lamportsAmount,
