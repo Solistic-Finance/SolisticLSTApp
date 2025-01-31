@@ -1,4 +1,3 @@
-
 import {
   ComputeBudgetProgram,
   PublicKey,
@@ -74,7 +73,10 @@ export async function claim(
     console.log("Claim transaction signature:", signature);
     return signature;
   } catch (error) {
-    console.error("Error during claim:");
-    alert("Something went wrong");
+    console.error("Error during claim:", error);
+    if (error instanceof Error) {
+      throw new Error(`Claim failed: ${error.message}`);
+    }
+    throw new Error("Claim failed: An unexpected error occurred");
   }
 }
