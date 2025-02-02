@@ -7,6 +7,7 @@ import { claim } from "../solana/solistic/instructions/claim";
 import { useConnection } from "@solana/wallet-adapter-react";
 import ErrorMessage from "./ErrorMessage";
 import { initConfig } from "../solana/solistic/initConfig";
+import TransactionSuccess from "./TransactionSuccess";
 
 const ManageStakeAccounts = ({ onClose }) => {
   const { publicKey, wallet, connected } = useWallet();
@@ -14,6 +15,7 @@ const ManageStakeAccounts = ({ onClose }) => {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [successSignature, setSuccessSignature] = useState("");
 
   useEffect(() => {
     const fetchTickets = async () => {
@@ -36,28 +38,76 @@ const ManageStakeAccounts = ({ onClose }) => {
   }, [publicKey, connected, wallet]);
 
   const handleClaim = async (ticketAccount) => {
-    if (!publicKey || !connected) {
+    if (!publicKey || !connected || !wallet?.adapter) {
       setErrorMessage("Please connect your wallet");
       return;
     }
-
+  
     try {
+      setErrorMessage("");
+      setSuccessSignature("");
+      setLoading(true);
+  
+      const ticketAccountPubkey = ticketAccount instanceof PublicKey 
+        ? ticketAccount 
+        : new PublicKey(ticketAccount);
+  
+      const wrappedSendTransaction = async (transaction, connection, options = {}) => {
+        if (!wallet.adapter.sendTransaction) {
+          throw new Error("Wallet does not support transaction sending");
+        }
+        return await wallet.adapter.sendTransaction(transaction, connection, options);
+      };
+  
       const signature = await claim(
-        ticketAccount,
+        ticketAccountPubkey,
         publicKey,
         wallet,
-        connection.sendTransaction,
+        wrappedSendTransaction,
         connected,
         true
       );
-      const { program } = initConfig(wallet, publicKey);
-      const unstakeTickets = await getDelayedUnstakeTickets(program, publicKey);
-      setTickets(unstakeTickets);
+  
+      setSuccessSignature(signature);
+      
+      // Remove the claimed ticket from the UI immediately
+      setTickets(prevTickets => 
+        prevTickets.filter(ticket => 
+          ticket.ticketAccount.toString() !== ticketAccount.toString()
+        )
+      );
+  
     } catch (error) {
-      console.error("Error claiming ticket:", error);
-      setErrorMessage("Failed to claim unstake ticket");
+      console.error("Claim error:", error);
+      setErrorMessage(error instanceof Error ? error.message : "Failed to process claim");
+    } finally {
+      setLoading(false);
     }
   };
+  
+  
+
+  useEffect(() => {
+    if (successSignature) {
+      const refreshTickets = async () => {
+        if (!publicKey || !connected) return;
+        try {
+          // Wait for 2 seconds to ensure backend has processed the change
+          await new Promise(resolve => setTimeout(resolve, 15000));
+          
+          const { program } = initConfig(wallet, publicKey);
+          const unstakeTickets = await getDelayedUnstakeTickets(program, publicKey);
+          setTickets(unstakeTickets);
+        } catch (error) {
+          console.error("Error refreshing tickets:", error);
+          setErrorMessage("Failed to refresh unstake tickets");
+        }
+      };
+  
+      refreshTickets();
+    }
+  }, [successSignature, publicKey, connected, wallet]);
+  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -70,6 +120,7 @@ const ManageStakeAccounts = ({ onClose }) => {
           >
             <FiX size={24} />
           </button>
+
           <h2 className="text-3xl text-[#1F0B35] mb-6 dark:text-[#F8EBD0] text-center">
             Manage Your Stake Accounts
           </h2>
@@ -87,18 +138,6 @@ const ManageStakeAccounts = ({ onClose }) => {
           </p>
 
           <div className="bg-[#E6E6FF] dark:bg-[#2A2A2A] mt-8 p-6 rounded-xl">
-            {/* <div className="flex justify-between items-center border-b border-[#D1D1E9] dark:border-[#3A3A3A] pb-4 mb-4">
-              <div className="text-[#1F0B35] font-semibold dark:text-[#F8EBD0]">
-                Active Stake Balances
-              </div>
-              <div className="text-[#1F0B35] font-semibold dark:text-[#F8EBD0]">
-                Validator
-              </div>
-              <div className="text-[#1F0B35] font-semibold dark:text-[#F8EBD0]">
-                Action
-              </div>
-            </div> */}
-
             <div className="space-y-4">
               {loading ? (
                 <div className="text-center text-[#6F5DA8] dark:text-[#F8EBD0]">Loading...</div>
@@ -116,17 +155,30 @@ const ManageStakeAccounts = ({ onClose }) => {
                     <button 
                       onClick={() => handleClaim(ticket.ticketAccount)}
                       className="bg-[#6F5DA8] text-white px-6 py-2 rounded-lg font-bold hover:opacity-90 transition"
+                      disabled={loading}
                     >
-                      Claim
+                      {loading ? 'Processing...' : 'Claim'}
                     </button>
                   </div>
                 ))
               )}
-              {errorMessage && <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />}
+              {errorMessage && (
+                <ErrorMessage
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
+              />
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {successSignature && (
+        <TransactionSuccess
+          successSignature={successSignature}
+          setSuccessSignature={setSuccessSignature}
+        />
+      )}
     </div>
   );
 };
