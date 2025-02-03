@@ -332,7 +332,7 @@ export default function StakeUnstakeComponent({
     try {
       const response = await fetch('https://alpha-api.solistic.finance/state/ssol-price', {
         headers: {
-          'x-api-key': 'a9c24b7f-a7a9-4f85-95db-dd22ffe31137'
+          'x-api-key': process.env.NEXT_PUBLIC_SOLISTIC_API_KEY
         }
       });
       if (!response.ok) throw new Error('Failed to fetch sSol price');
