@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.29.0",
+    "@jup-ag/core": "^4.0.0-beta.21",
     "@next/font": "^14.2.15",
     "@okxconnect/solana-provider": "^1.5.0",
     "@sentry/nextjs": "^8.38.0",
