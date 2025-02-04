@@ -215,7 +215,7 @@ const UnstakeTicket = () => {
       )}
 
       <div className="w-full max-w-6xl bg-white dark:bg-[#181818] shadow-lg rounded-xl p-6 space-y-4 border border-purple-200 dark:border-[#3A3A3A] mt-2">
-        <h2 className="text-3xl text-gray-800 dark:text-[#F8EBD0] mb-4">
+        <h2 className="text-2xl text-gray-800 dark:text-[#F8EBD0] mb-4">
           Delayed unstaked Solana
         </h2>
         
@@ -233,7 +233,7 @@ const UnstakeTicket = () => {
                 <div className="flex items-center space-x-3">
                   <img src="/sol-icon.png" alt="SOL" className="h-8 w-8 border border-[#6F5DA8] dark:border-[#F8EBD0] rounded-full" />
                   <div>
-                    <div className="text-2xl font-semibold text-gray-900 dark:text-[#F8EBD0] mb-1">
+                    <div className="text-xl font-semibold text-gray-900 dark:text-[#F8EBD0] mb-1">
                       {(ticket.lamportsAmount / LAMPORTS_PER_SOL).toFixed(4)}
                     </div>
                   </div>
