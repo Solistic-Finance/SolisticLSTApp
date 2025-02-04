@@ -48,6 +48,7 @@ export default function StakeUnstakeComponent({
   const [tipsActive, setTipsActive] = useState("off"); // toggle Tips
   const [ssolPrice, setSsolPrice] = useState<number | null>(null);
   const [ssolDollarPrice, setSsolDollarPrice] = useState<number | null>(null);
+  const [jupiterQuote, setJupiterQuote] = useState<number | null>(null);
 
   const handleChangeOverlay = () => {
     setIsOverlayVisible(!isOverlayVisible); // Toggle the overlay visibility
@@ -408,6 +409,39 @@ export default function StakeUnstakeComponent({
     }
   }, [solPrice, ssolPrice]);
 
+  const getJupiterQuote = async (inputAmount: number) => {
+    try {
+      if (!publicKey || !wallet) return;
+
+      const { connection, program } = initConfig(wallet, publicKey);
+      const stateAccountData = await getStateAccountData(program);
+      const sSolMint = stateAccountData.ssolMint;
+
+      // Use Jupiter API directly
+      const response = await fetch(`https://quote-api.jup.ag/v6/quote?inputMint=${sSolMint.toString()}&outputMint=${process.env.NEXT_PUBLIC_SOLANA_ADDRESS}&amount=${Math.floor(inputAmount * LAMPORTS_PER_SOL)}&slippageBps=50`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to get Jupiter quote');
+      }
+
+      const quoteData = await response.json();
+      if (quoteData.data?.[0]) {
+        const outAmount = Number(quoteData.data[0].outAmount) / LAMPORTS_PER_SOL;
+        setJupiterQuote(outAmount);
+        return outAmount;
+      }
+    } catch (error) {
+      console.error("Error getting Jupiter quote:", error);
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    if (stakeAmount && selectedOption === "immediate") {
+      getJupiterQuote(Number(stakeAmount));
+    }
+  }, [stakeAmount, selectedOption]);
+
   return (
     <div className="flex flex-col items-center bg-[#ede9f7] dark:bg-black py-8 px-4">
       {errorMessage && (
@@ -638,7 +672,7 @@ export default function StakeUnstakeComponent({
                             selected === option
                               ? "bg-[#6F5DA8] text-white"
                               : "bg-transparent"
-                          }`}
+                      }`}
                           style={{
                             flex: 1, // Ensures buttons share equal space
                             maxWidth: "60px", // Further restricts button size
@@ -733,9 +767,11 @@ export default function StakeUnstakeComponent({
                     </span>
                   </div>
                   <span className="text-[#6F5DA8]">
-                    {selectedOption === "delayed" && stakeAmount && ssolPrice
-                      ? (Number(stakeAmount) * (ssolPrice || 0)).toFixed(6)
-                      : ""}
+                    {stakeAmount && (
+                      selectedOption === "delayed" 
+                        ? (Number(stakeAmount) * (ssolPrice || 0)).toFixed(6)
+                        : jupiterQuote?.toFixed(6) || (Number(stakeAmount) * (ssolPrice || 0)).toFixed(6)
+                    )}
                   </span>
                 </div>
               </div>
