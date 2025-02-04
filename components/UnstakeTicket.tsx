@@ -228,12 +228,12 @@ const UnstakeTicket = () => {
             return (
               <div 
                 key={ticketKey}
-                className="flex items-center justify-between bg-[#F0EEFF] dark:bg-[#2A2A2A] rounded-xl p-4 border-[#CCBDFC] border-2 dark:border-[#3A3A3A]"
+                className="flex items-center justify-between bg-[#F0EEFF] dark:bg-[#2A2A2A] rounded-xl p-2 border-[#CCBDFC] border-2 dark:border-[#3A3A3A]"
               >
                 <div className="flex items-center space-x-3">
                   <img src="/sol-icon.png" alt="SOL" className="h-8 w-8 border border-[#6F5DA8] dark:border-[#F8EBD0] rounded-full" />
                   <div>
-                    <div className="text-3xl font-semibold text-gray-900 dark:text-[#F8EBD0] mb-2">
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-[#F8EBD0] mb-1">
                       {(ticket.lamportsAmount / LAMPORTS_PER_SOL).toFixed(4)}
                     </div>
                   </div>
@@ -242,7 +242,7 @@ const UnstakeTicket = () => {
                   <button
                     onClick={() => handleClaim(ticketKey)}
                     disabled={!claimable || loading}
-                    className={`px-6 py-2 rounded-lg font-bold transition ${
+                    className={`px-4 py-2 rounded-lg font-bold transition ${
                       loading 
                         ? 'bg-purple-400 cursor-not-allowed text-[#F8EBD0]'
                         : claimable
@@ -277,7 +277,7 @@ const UnstakeTicket = () => {
         {tickets.length > 1 && tickets.every(t => isClaimable(t.ticketAccount.toString())) && (
           <button
             onClick={handleClaimAll}
-            className="w-full py-3 rounded-full text-[#F8EBD0] font-bold bg-[#6F5DA8] hover:opacity-90 transition mt-4"
+            className="w-full py-3 rounded-full text-lg text-[#F8EBD0] font-bold bg-[#6F5DA8] hover:opacity-90 transition mt-4"
           >
             Claim all
           </button>

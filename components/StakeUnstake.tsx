@@ -357,8 +357,8 @@ export default function StakeUnstakeComponent({
           setErrorMessage={setErrorMessage}
         />
       )}
-      <div className="w-full max-w-6xl bg-white dark:bg-[#202020] shadow-lg rounded-xl p-6 space-y-6 border border-purple-200 dark:border-[#3A3A3A]">
-        <h2 className="text-2xl font-zilla-slab text-start text-gray-900 dark:text-[#F8EBD0]">
+      <div className="w-full max-w-6xl bg-white dark:bg-[#202020] shadow-lg rounded-xl p-6 border border-purple-200 dark:border-[#3A3A3A]">
+        <h2 className="text-3xl font-zilla-slab text-start text-gray-900 dark:text-[#F8EBD0] mb-2">
           Get{" "}
           <span className="text-[#6F5DA8] font-bold">
             {stake ? "sSOL" : "SOL"}
@@ -402,7 +402,7 @@ export default function StakeUnstakeComponent({
         {stake ? (
           // Stake Section
           <>
-            <div className="flex items-center justify-between text-sm text-gray-600 dark:text-[#F8EBD0]">
+            <div className="flex items-center justify-between text-xs text-gray-600 dark:text-[#F8EBD0] mt-5 mb-2">
               <span className="font-poppins text-[#181818] dark:text-[#F8EBD0]">
                 You’re staking
               </span>
@@ -446,10 +446,10 @@ export default function StakeUnstakeComponent({
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-sm text-[#181818] dark:text-[#F8EBD0] font-poppins">
+            <div className="flex items-center justify-between text-xs text-[#181818] dark:text-[#F8EBD0] font-poppins mt-4 mb-2">
               <span className="flex">
                 To receive
-                <FiInfo className="text-[#6F5DA8] dark:text-[#6F5DA8] ml-1 mt-1" />
+                <FiInfo className="text-[#6F5DA8] dark:text-[#6F5DA8] text-sm ml-1" />
               </span>
               <div className="flex items-center space-x-1">
                 {/* <FiInfo className="text-gray-400 dark:text-gray-500" /> */}
@@ -476,7 +476,7 @@ export default function StakeUnstakeComponent({
 
             <button
               disabled={!publicKey}
-              className={`w-full py-3 rounded-full font-bold text-lg ${
+              className={`w-full py-3 rounded-full font-bold text-lg mt-5 ${
                 publicKey
                   ? "bg-[#6F5DA8] dark:bg-[#6F5DA8] text-[#F8EBD0] cursor-pointer"
                   : "bg-gray-400 dark:bg-gray-600 text-gray-300 cursor-not-allowed"
@@ -491,7 +491,7 @@ export default function StakeUnstakeComponent({
           <>
             <div>
               {/* Unstaking Header */}
-              <div className="text-sm text-[#181818] dark:text-[#F8EBD0] mb-6 font-poppins">
+              <div className="text-xs text-[#181818] dark:text-[#F8EBD0] mt-5 mb-2 font-poppins">
                 <span>You’re unstaking</span>
                 <div className="flex items-center space-x-1 float-right">
                   <FaWallet className="text-[#6F5DA8] dark:text-[#6F5DA8]" />
@@ -700,14 +700,14 @@ export default function StakeUnstakeComponent({
 
       <div className="w-full max-w-6xl bg-white dark:bg-[#181818] shadow-lg rounded-xl p-6 space-y-6 border border-purple-200 dark:border-[#3A3A3A] mt-2">
         {/* Conversion Rate */}
-        <div className="flex justify-between text-sm text-gray-800 dark:text-[#F8EBD0] font-poppins mt-4">
+        <div className="flex justify-between text-xs text-gray-800 dark:text-[#F8EBD0] font-poppins mt-2">
           <span>1 sSol Token</span>
           <span>≈1.012 SOL</span>
         </div>
 
         {/* Priority Fee Option */}
         <div className="flex items-center justify-between mt-4 font-poppins">
-          <span className="text-sm text-gray-800 dark:text-[#F8EBD0] flex items-center relative">
+          <span className="text-xs text-gray-800 dark:text-[#F8EBD0] flex items-center relative">
             Priority fee active
             <FiInfo
               className="ml-1 text-[#6F5DA8] dark:text-[#6F5DA8]"
@@ -724,7 +724,7 @@ export default function StakeUnstakeComponent({
           <div className="flex space-x-2 border-[#CCBDFC] border-2 dark:border-[#3A3A3A] rounded-full">
             <button
               onClick={() => setPriorityFee(false)}
-              className={`px-3 py-1 text-xs rounded-full transition ${
+              className={`px-2 py-0.5 text-xs rounded-full transition ${
                 !priorityFee ? "bg-gray-200 dark:bg-gray-700" : ""
               }`}
             >
@@ -732,7 +732,7 @@ export default function StakeUnstakeComponent({
             </button>
             <button
               onClick={() => setPriorityFee(true)}
-              className={`px-3 py-1 text-xs rounded-full transition font-semibold ${
+              className={`px-2 py-0.5 text-xs rounded-full transition font-semibold ${
                 priorityFee ? "bg-[#F0EEFF] text-[#5040AA]" : ""
               }`}
             >

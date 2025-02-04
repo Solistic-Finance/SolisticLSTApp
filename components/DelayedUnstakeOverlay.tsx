@@ -24,51 +24,43 @@ const DelayedUnstakeOverlay = ({ onClose }) => {
               </div>
               <div className="font-poppins">
                 <p className="font-semibold text-[#1F0B35] dark:text-[#F8EBD0]">
-                  Initiate the unstaking process.
+                Initiate unstaking
                 </p>
                 <p className="text-[#1F0B35] dark:text-[#F8EBD0]">
-                  This will transfer your stake from the pool to a stake account
-                  in your wallet.
+                Your staked tokens will be requested for withdrawal from validators.
                 </p>
               </div>
             </div>
 
-            <div className="flex items-start space-x-3">
+            <div className="flex items-center space-x-3">
               <div className="diamond-number">
                 <span className="text-[#6F5DA8] dark:text-[#F8EBD0]">2</span>
               </div>
               <div className="font-poppins">
                 <p className="font-semibold text-[#1F0B35] dark:text-[#F8EBD0]">
-                  Manually deactivate your stake account by clicking on the
-                  "Deactivate" button on the
-                  <a href="/manage" className="text-[#6F5DA8]">
-                    {" "}
-                    Manage Stake Accounts
-                  </a>{" "}
-                  page or in your wallet.
+                Wait for the next epoch boundary.
                 </p>
-                <p className="text-[#1F0B35] dark:text-[#F8EBD0]">
+                {/* <p className="text-[#1F0B35] dark:text-[#F8EBD0]">
                   Your stake will be available at the next epoch boundary,
                   approximately at Nov 8, 2024, 11:31 PM. Your funds will remain
                   locked until that time.
-                </p>
+                </p> */}
               </div>
             </div>
 
             {/* Step 3 */}
-            <div className="flex items-start space-x-3">
+            <div className="flex items-center space-x-3">
               <div className="diamond-number">
                 <span className="text-[#6F5DA8] dark:text-[#F8EBD0]">3</span>
               </div>
               <div className="font-poppins">
                 <p className="font-semibold text-[#1F0B35] dark:text-[#F8EBD0]">
-                  Once your stake has finished deactivating, click on the
-                  "Withdraw" button to withdraw SOL to your wallet.
+                Claim your unstaked SOL from the home page once available.
                 </p>
-                <p className="text-[#1F0B35] dark:text-[#F8EBD0]">
+                {/* <p className="text-[#1F0B35] dark:text-[#F8EBD0]">
                   After the SOL is withdrawn to your wallet, it can be moved
                   around freely.
-                </p>
+                </p> */}
               </div>
             </div>
           </div>
