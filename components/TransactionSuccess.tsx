@@ -21,7 +21,7 @@ const TransactionSuccess = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white dark:bg-[#181818] shadow-lg rounded-lg p-5 w-96 text-center">
+      <div className="bg-white dark:bg-[#181818] shadow-lg rounded-lg p-10 md:w-2/6 w-96 text-center">
         <h2 className="text-2xl text-start font-bold text-[#1F0B35] dark:text-[#F8EBD0]">
           Transaction successful!
         </h2>

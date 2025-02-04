@@ -10,7 +10,7 @@ type TErrorMessage = {
 const ErrorMessage = ({ errorMessage, setErrorMessage }: TErrorMessage) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white dark:bg-[#181818] shadow-lg rounded-lg p-5 w-96 text-center">
+      <div className="bg-white dark:bg-[#181818] shadow-lg rounded-lg p-10 md:w-1/4 w-96 text-center">
         <div className="flex items-center text-[#1F0B35] dark:text-[#F8EBD0]">
           <FiAlertCircle size={24} className="mr-2" />
           <h2 className="text-2xl font-bold text-[#1F0B35] text-start dark:text-[#F8EBD0]">

@@ -19,6 +19,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { initConfig } from "../solana/solistic/initConfig";
+import UnstakeTicket from "./UnstakeTicket";
 
 type TStakeUnStake = {
   successSignature: string;
@@ -45,6 +46,7 @@ export default function StakeUnstakeComponent({
   const [balance, setBalance] = useState(0);
   const [sSolBalance, setSSolBalance] = useState("");
   const [tipsActive, setTipsActive] = useState("off"); // toggle Tips
+  const [ssolPrice, setSsolPrice] = useState<number | null>(null);
 
   const handleChangeOverlay = () => {
     setIsOverlayVisible(!isOverlayVisible); // Toggle the overlay visibility
@@ -326,6 +328,27 @@ export default function StakeUnstakeComponent({
     };
   }, []);
 
+  const fetchSsolPrice = async () => {
+    try {
+      const response = await fetch('https://alpha-api.solistic.finance/state/ssol-price', {
+        headers: {
+          'x-api-key': process.env.NEXT_PUBLIC_SOLISTIC_API_KEY
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch sSol price');
+      const { data } = await response.json();
+      setSsolPrice(data.price);
+    } catch (error) {
+      console.error("Error fetching sSol price:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSsolPrice();
+    const interval = setInterval(fetchSsolPrice, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="flex flex-col items-center bg-[#ede9f7] dark:bg-black py-8 px-4">
       {errorMessage && (
@@ -344,7 +367,7 @@ export default function StakeUnstakeComponent({
         </h2>
 
         {/* Toggle between Stake and Unstake */}
-        <div className="flex items-center justify-center space-x-4 bg-[#CCBDFC] dark:bg-black p-2 rounded-lg w-full">
+        <div className="flex items-center justify-center space-x-4 bg-[#CCBDFC] dark:bg-black p-3 rounded-2xl w-full">
           <div className="relative w-1/2 flex">
             <button
               onClick={() => setStake(true)}
@@ -390,7 +413,7 @@ export default function StakeUnstakeComponent({
                 </span>
               </div>
             </div>
-            <div className="flex items-center bg-[#F0EEFF] dark:bg-black rounded-2xl p-2 border-[#CCBDFC] border-2">
+            <div className="flex items-center bg-[#F0EEFF] dark:bg-black rounded-2xl p-2 border-[#CCBDFC] border-2 dark:border-[#3A3A3A]">
               <div className="flex items-center space-x-2 bg-white dark:bg-[#3A3A3A] p-2 rounded-lg">
                 <img src="/sol-icon.png" alt="SOL" className="h-8 w-8" />
                 <span className="text-gray-800 font-bold dark:text-[#F8EBD0]">
@@ -399,24 +422,24 @@ export default function StakeUnstakeComponent({
                 <FaChevronDown className="text-[#6F5DA8] dark:text-[#6F5DA8]" />
               </div>
               <div className="ml-auto flex flex-col items-end font-zilla-slab">
-                <input
-                  type="number"
-                  placeholder="0.0"
-                  className="ml-auto text-2xl font-bold text-gray-900 dark:text-[#F8EBD0] bg-transparent focus:outline-none w-40 text-right"
-                  value={stakeAmount}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    // Allow only non-negative values
-                    setStakeAmount(value);
-                  }}
-                  onKeyDown={(e) => {
-                    // Prevent typing the minus sign
-                    if (e.key === "-") {
-                      e.preventDefault();
-                    }
-                  }}
-                  min="0"
-                />
+                <div className="flex items-center">
+                  <input
+                    type="number"
+                    placeholder="0.0"
+                    className="ml-auto text-2xl font-bold text-gray-900 dark:text-[#F8EBD0] bg-transparent focus:outline-none w-40 text-right"
+                    value={stakeAmount}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setStakeAmount(value);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "-") {
+                        e.preventDefault();
+                      }
+                    }}
+                    min="0"
+                  />
+                </div>
                 <div className="text-sm text-[#6F5DA8] dark:text-[#6F5DA8] ml-2">
                   {(Number(stakeAmount) * solPrice).toFixed(2)}
                 </div>
@@ -435,7 +458,7 @@ export default function StakeUnstakeComponent({
                 </span>
               </div>
             </div>
-            <div className="flex items-center bg-[#F0EEFF] dark:bg-black rounded-2xl p-2 border-[#CCBDFC] border-2">
+            <div className="flex items-center bg-[#F0EEFF] dark:bg-black rounded-2xl p-2 border-[#CCBDFC] border-2 dark:border-[#3A3A3A]">
               <div className="flex items-center space-x-2 bg-white dark:bg-[#3A3A3A] p-2 rounded-lg">
                 <img src="/ssol-icon.png" alt="sSOL" className="h-8 w-8" />
                 <span className="text-gray-800 font-bold dark:text-[#F8EBD0]">
@@ -443,14 +466,11 @@ export default function StakeUnstakeComponent({
                 </span>
               </div>
               <div className="ml-auto flex flex-col items-end">
-                {/* <input
-                  type="number"
-                  placeholder="10.89"
-                  className="ml-auto text-2xl font-bold text-gray-900 dark:text-[#F8EBD0] bg-transparent focus:outline-none w-14"
-                /> */}
-                {/* <div className="text-sm text-[#6F5DA8] dark:text-[#6F5DA8] ml-2">
-                  $2101.82
-                </div> */}
+                <div className="flex items-center space-x-2">
+                  <div className="text-2xl font-bold text-gray-900 dark:text-[#F8EBD0]">
+                    {ssolPrice && stakeAmount ? (Number(stakeAmount) / ssolPrice).toFixed(6) : ""}
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -482,7 +502,7 @@ export default function StakeUnstakeComponent({
               </div>
 
               {/* sSOL Information Box */}
-              <div className="flex items-center bg-[#F0EEFF] dark:bg-black rounded-2xl p-2 border-[#CCBDFC] border-2 mt-2">
+              <div className="flex items-center bg-[#F0EEFF] dark:bg-black rounded-2xl p-2 border-[#CCBDFC] border-2 dark:border-[#3A3A3A] mt-2">
                 <div className="flex items-center space-x-2 bg-white dark:bg-[#3A3A3A] rounded-lg p-2">
                   <img src="/ssol-icon.png" alt="sSOL" className="h-8 w-8" />
                   <span className="text-gray-800 font-bold dark:text-[#F8EBD0]">
@@ -490,7 +510,6 @@ export default function StakeUnstakeComponent({
                   </span>
                 </div>
                 <div className="ml-auto flex flex-col items-end">
-                  {/* <div className="text-2xl font-bold text-gray-900 dark:text-[#F8EBD0]">12.5</div> */}
                   <input
                     type="number"
                     placeholder="0.0"
@@ -498,7 +517,6 @@ export default function StakeUnstakeComponent({
                     value={stakeAmount}
                     onChange={(e) => setStakeAmount(e.target.value)}
                     onKeyDown={(e) => {
-                      // Prevent typing the minus sign
                       if (e.key === "-") {
                         e.preventDefault();
                       }
@@ -511,14 +529,14 @@ export default function StakeUnstakeComponent({
                 </div>
               </div>
 
-              <div className="border-2 border-[#CCBDFC] rounded-lg mt-4 p-2">
+              <div className="border-2 border-[#CCBDFC] rounded-lg mt-4 p-2 dark:border-[#3A3A3A]">
                 {/* Jupiter and Delayed Options */}
                 <div className="flex justify-between items-center p-2 bg-white dark:bg-[#202020] rounded-lg border border-[#CCBDFC] dark:text-[#F8EBD0] flex-wrap space-y-2 md:space-y-0">
                   {/* Immediately via Jupiter Section */}
                   <div
                     className={`flex-1 min-w-[45%] rounded-md p-2 cursor-pointer ${
                       selectedOption === "immediate"
-                        ? "bg-[#6F5DA8] dark:bg-[#6F5DA8] border-2 border-[#6F5DA8]"
+                        ? "bg-[#6F5DA8] dark:bg-[#6F5DA8] border-2 border-[#6F5DA8] dark:border-[#3A3A3A]"
                         : "bg-white dark:bg-transparent"
                     }`}
                     onClick={() => setSelectedOption("immediate")}
@@ -581,7 +599,7 @@ export default function StakeUnstakeComponent({
                   <div
                     className={`relative flex-1 min-w-[45%] rounded-md p-2 cursor-pointer ${
                       selectedOption === "delayed"
-                        ? "bg-[#6F5DA8] dark:bg-[#6F5DA8] border-2 border-[#6F5DA8]"
+                        ? "bg-[#6F5DA8] dark:bg-[#6F5DA8] border-2 border-[#6F5DA8] dark:border-[#3A3A3A]"
                         : "bg-white dark:bg-transparent"
                     }`}
                     onClick={() => setSelectedOption("delayed")}
@@ -648,7 +666,7 @@ export default function StakeUnstakeComponent({
                 </div>
 
                 {/* SOL Amount Display */}
-                <div className="flex items-center space-x-2 justify-between mt-2 bg-[#EDE8FD] rounded-lg p-2 border-[#CCBDFC] dark:bg-black border-2 text-2xl font-bold text-gray-900 dark:text-[#F8EBD0]">
+                <div className="flex items-center space-x-2 justify-between mt-2 bg-[#EDE8FD] rounded-lg p-2 border-[#CCBDFC] dark:bg-black border-2 dark:border-[#3A3A3A] text-2xl font-bold text-gray-900 dark:text-[#F8EBD0]">
                   <div className="flex items-center space-x-2 bg-white dark:bg-[#3A3A3A] rounded-lg p-2 text-base">
                     <img src="/sol-icon.png" alt="SOL" className="h-8 w-8" />
                     <span className="text-gray-800 font-bold dark:text-gray-200">
@@ -678,6 +696,8 @@ export default function StakeUnstakeComponent({
         )}
       </div>
 
+      <UnstakeTicket />
+
       <div className="w-full max-w-6xl bg-white dark:bg-[#181818] shadow-lg rounded-xl p-6 space-y-6 border border-purple-200 dark:border-[#3A3A3A] mt-2">
         {/* Conversion Rate */}
         <div className="flex justify-between text-sm text-gray-800 dark:text-[#F8EBD0] font-poppins mt-4">
@@ -695,13 +715,13 @@ export default function StakeUnstakeComponent({
               onMouseLeave={() => setShowTooltip(false)}
             />
             {showTooltip && (
-              <div className="absolute top-full left-0 mt-2 w-56 p-2 bg-purple-100 text-[#6F5DA8] border-2 border-[#CCBDFC] text-xs rounded-lg shadow-lg dark:bg-[#181818] dark:border-[#3A3A3A] dark:text-[#F8EBD0]">
+              <div className="absolute top-full left-0 mt-2 w-56 p-2 bg-purple-100 text-[#6F5DA8] border-2  border-[#CCBDFC] text-xs rounded-lg shadow-lg dark:bg-[#181818] dark:border-[#3A3A3A] dark:text-[#F8EBD0]">
                 Pay a small fee to prioritize the inclusion of your transaction
                 in the next blocks.
               </div>
             )}
           </span>
-          <div className="flex space-x-2 border-[#CCBDFC] border-2 rounded-full">
+          <div className="flex space-x-2 border-[#CCBDFC] border-2 dark:border-[#3A3A3A] rounded-full">
             <button
               onClick={() => setPriorityFee(false)}
               className={`px-3 py-1 text-xs rounded-full transition ${
