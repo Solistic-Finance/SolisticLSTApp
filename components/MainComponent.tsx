@@ -18,7 +18,7 @@ export default function MainComponent() {
         {/* Left Side */}
         <div className="md:w-96 w-full max-w-md text-center md:text-left self-start mt-8 order-2 md:order-1">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1F0B35] dark:text-[#F8EBD0] text-start ml-4">
-            MEV powered staking rewards
+          AI Automated Stake Delegation Rewards
           </h2>
           <p className="text-base font-poppins md:text-lg lg:text-base text-[#5040AA] dark:text-[#CCBDFC] mt-4 lg:mt-6 text-start ml-4">
             Boost your yield by up to 15% when you stake{" "}
