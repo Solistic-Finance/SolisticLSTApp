@@ -409,7 +409,7 @@ export default function StakeUnstakeComponent({
               <div className="flex items-center space-x-1">
                 <FaWallet className="text-[#6F5DA8] dark:text-[#6F5DA8]" />
                 <span className="text-xs text-[#181818] dark:text-[#F8EBD0] font-poppins">
-                  {balance.toFixed(3)}
+                {Math.floor(Number(balance) * 1000) / 1000}
                 </span>
               </div>
             </div>
@@ -496,7 +496,7 @@ export default function StakeUnstakeComponent({
                 <div className="flex items-center space-x-1 float-right">
                   <FaWallet className="text-[#6F5DA8] dark:text-[#6F5DA8]" />
                   <span className="text-xs text-[#181818] dark:text-[#F8EBD0] font-poppins">
-                    {Number(sSolBalance).toFixed(3)}
+                  {Math.floor(Number(sSolBalance) * 1000) / 1000}
                   </span>
                 </div>
               </div>
