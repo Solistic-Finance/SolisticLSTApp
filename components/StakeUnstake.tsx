@@ -47,6 +47,7 @@ export default function StakeUnstakeComponent({
   const [sSolBalance, setSSolBalance] = useState("");
   const [tipsActive, setTipsActive] = useState("off"); // toggle Tips
   const [ssolPrice, setSsolPrice] = useState<number | null>(null);
+  const [ssolDollarPrice, setSsolDollarPrice] = useState<number | null>(null);
 
   const handleChangeOverlay = () => {
     setIsOverlayVisible(!isOverlayVisible); // Toggle the overlay visibility
@@ -344,10 +345,68 @@ export default function StakeUnstakeComponent({
   };
 
   useEffect(() => {
+    // Initial fetch
     fetchSsolPrice();
-    const interval = setInterval(fetchSsolPrice, 30000);
-    return () => clearInterval(interval);
+    
+    // Set up interval only for sSol price in Sol
+    const ssolPriceInterval = setInterval(fetchSsolPrice, 30000);
+    
+    return () => {
+      clearInterval(ssolPriceInterval);
+    };
   }, []);
+
+  const fetchSsolDollarPrice = async () => {
+    try {
+      if (!wallet || !publicKey) return;
+
+      // Get sSol mint address from state account
+      const { connection, program } = initConfig(wallet, publicKey);
+      const stateAccountData = await getStateAccountData(program);
+      const sSolMint = stateAccountData.ssolMint;
+
+      const options = {
+        method: "GET",
+        url: process.env.NEXT_PUBLIC_BIRD_EYE_PRICE_ENDPOINT,
+        params: {
+          address: sSolMint.toString(),
+        },
+        headers: {
+          "X-API-KEY": process.env.NEXT_PUBLIC_BIRD_EYE_API_KEY,
+          accept: "application/json",
+          "x-chain": "solana",
+        },
+      };
+
+      const response = await axios.request(options);
+      if (response.data && response.data.data && response.data.data.value) {
+        setSsolDollarPrice(Number(Number(response.data.data.value).toFixed(2)));
+      }
+    } catch (error) {
+      console.error("Error fetching sSol dollar price:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (wallet && publicKey) {
+      // Initial fetch
+      fetchSsolDollarPrice();
+      
+      // Set up interval with a longer delay to avoid rate limits
+      const ssolDollarPriceInterval = setInterval(fetchSsolDollarPrice, 60000); // Every 60 seconds
+      
+      return () => {
+        clearInterval(ssolDollarPriceInterval);
+      };
+    }
+  }, [wallet, publicKey]);
+
+  useEffect(() => {
+    if (solPrice && ssolPrice) {
+      const ssolInDollars = solPrice * ssolPrice;
+      setSsolDollarPrice(Number(ssolInDollars.toFixed(2)));
+    }
+  }, [solPrice, ssolPrice]);
 
   return (
     <div className="flex flex-col items-center bg-[#ede9f7] dark:bg-black py-8 px-4">
@@ -441,7 +500,7 @@ export default function StakeUnstakeComponent({
                   />
                 </div>
                 <div className="text-sm text-[#6F5DA8] dark:text-[#6F5DA8] ml-2">
-                  {(Number(stakeAmount) * solPrice).toFixed(2)}
+                  ${(Number(stakeAmount) * solPrice).toFixed(2)}
                 </div>
               </div>
             </div>
@@ -524,7 +583,7 @@ export default function StakeUnstakeComponent({
                     min="0"
                   />
                   <div className="text-sm text-[#6F5DA8] dark:text-[#6F5DA8]">
-                    {/* {(Number(stakeAmount) * solPrice).toFixed(2)} */}0.00
+                    ${(Number(stakeAmount) * (ssolDollarPrice || 0)).toFixed(2)}
                   </div>
                 </div>
               </div>
