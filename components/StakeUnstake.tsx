@@ -673,7 +673,11 @@ export default function StakeUnstakeComponent({
                       SOL
                     </span>
                   </div>
-                  {/* <span className="text-[#6F5DA8]">13.0775647</span> */}
+                  <span className="text-[#6F5DA8]">
+                    {selectedOption === "delayed" && stakeAmount && ssolPrice
+                      ? (Number(stakeAmount) * (ssolPrice || 0)).toFixed(6)
+                      : ""}
+                  </span>
                 </div>
               </div>
 
@@ -702,7 +706,7 @@ export default function StakeUnstakeComponent({
         {/* Conversion Rate */}
         <div className="flex justify-between text-xs text-gray-800 dark:text-[#F8EBD0] font-poppins mt-2">
           <span>1 sSol Token</span>
-          <span>≈1.012 SOL</span>
+          <span>≈<span>{ssolPrice?.toFixed(3)}</span> SOL</span>
         </div>
 
         {/* Priority Fee Option */}
