@@ -8,7 +8,7 @@ import {
   delayedUnstake,
   getStateAccountData,
 } from "../solana";
-import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import { LAMPORTS_PER_SOL, PublicKey, Transaction, VersionedTransaction } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
 import DelayedUnstakeOverlay from "./DelayedUnstakeOverlay";
 import axios from "axios";
@@ -34,7 +34,7 @@ export default function StakeUnstakeComponent({
   const [stake, setStake] = useState(true); // toggle between Stake and Unstake
   const [priorityFee, setPriorityFee] = useState(false); // toggle Priority fee
   const [showTooltip, setShowTooltip] = useState(false);
-  const [selected, setSelected] = useState("0.3%");
+  const [selected, setSelected] = useState("0.1%");
   const options = ["0.1%", "0.2%", "0.3%"];
   const [stakeAmount, setStakeAmount] = useState("");
   const [selectedOption, setSelectedOption] = useState<"immediate" | "delayed">(
@@ -48,6 +48,8 @@ export default function StakeUnstakeComponent({
   const [tipsActive, setTipsActive] = useState("off"); // toggle Tips
   const [ssolPrice, setSsolPrice] = useState<number | null>(null);
   const [ssolDollarPrice, setSsolDollarPrice] = useState<number | null>(null);
+  const [jupiterQuote, setJupiterQuote] = useState<number | null>(null);
+  const [isSwapping, setIsSwapping] = useState(false);
 
   const handleChangeOverlay = () => {
     setIsOverlayVisible(!isOverlayVisible); // Toggle the overlay visibility
@@ -107,43 +109,150 @@ export default function StakeUnstakeComponent({
   }, [stake]);
 
   const handleUnstakeSOL = async () => {
-    if (
-      !stakeAmount ||
-      isNaN(Number(stakeAmount)) ||
-      Number(stakeAmount) <= 0
-    ) {
-      setErrorMessage("Please enter a valid stake amount.");
-      return;
-    }
-
     try {
       if (!publicKey) {
         setErrorMessage("Please connect your wallet before proceeding.");
         return;
       }
 
-      // Convert stakeAmount to lamports (smallest unit of SOL)
-      const lamports = (Number(stakeAmount) * 1e9).toString(); // Convert SOL to lamports
+      // For immediate option, use the selected percentage
+      if (selectedOption === "immediate") {
+        if (!selected) {
+          setErrorMessage("Please select a slippage percentage first.");
+          return;
+        }
 
-      // Convert walletAddress to a PublicKey
-      const userPublicKey = new PublicKey(publicKey);
+        if (
+          !stakeAmount ||
+          isNaN(Number(stakeAmount)) ||
+          Number(stakeAmount) <= 0
+        ) {
+          setErrorMessage("Please enter a valid stake amount.");
+          return;
+        }
 
-      // Call the deposit function
-      const transactionSig = await unstake(
-        lamports,
-        userPublicKey,
-        wallet,
-        sendTransaction,
-        connected,
-        priorityFee
-      );
-      if (transactionSig) {
-        setSuccessSignature(transactionSig);
+        setIsSwapping(true);
+        
+        // Convert slippage percentage to basis points (1% = 100 bps)
+        const slippageBps = Math.floor(parseFloat(selected.replace("%", "")) * 100);
+        const lamportAmount = Math.floor(Number(stakeAmount) * LAMPORTS_PER_SOL);
+        
+        console.log("Amount:", stakeAmount, "SOL");
+        console.log("Slippage:", selected);
+        console.log("Slippage in bps:", slippageBps);
+        console.log("Swapping lamport amount:", lamportAmount);
+
+        // Get sSol mint address from state account
+        const { connection, program } = initConfig(wallet, publicKey);
+        const stateAccountData = await getStateAccountData(program);
+        const sSolMint = stateAccountData.ssolMint;
+
+        // Get route from Jupiter with selected slippage
+        const quoteResponse = await fetch(
+          `https://quote-api.jup.ag/v6/quote?inputMint=${sSolMint.toString()}&outputMint=${process.env.NEXT_PUBLIC_SOLANA_ADDRESS}&amount=${lamportAmount}&slippageBps=${slippageBps}`
+        );
+        
+        if (!quoteResponse.ok) {
+          throw new Error('Failed to get Jupiter quote. Please try again.');
+        }
+
+        const quoteData = await quoteResponse.json();
+        console.log("Jupiter quote data:", quoteData);
+
+        // Update the quote display with the expected output amount
+        const outAmount = Number(quoteData.outAmount) / LAMPORTS_PER_SOL;
+        setJupiterQuote(outAmount);
+        
+        // Get serialized transactions for the swap
+        const swapResponse = await fetch('https://quote-api.jup.ag/v6/swap', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            quoteResponse: quoteData,
+            userPublicKey: publicKey.toString(),
+            wrapAndUnwrapSol: true,
+            useSharedAccounts: false,
+            useTokenLedger: false,
+            computeUnitPriceMicroLamports: priorityFee ? 1000 : undefined
+          })
+        });
+
+        if (!swapResponse.ok) {
+          const swapResponseText = await swapResponse.text();
+          console.log("Swap response error:", swapResponseText);
+          throw new Error('Failed to prepare swap transaction. Please try again.');
+        }
+
+        const swapData = await swapResponse.json();
+        const swapTransaction = swapData.swapTransaction;
+
+        console.log("Preparing to send transaction...");
+        
+        // Deserialize and sign the transaction using VersionedTransaction
+        const transaction = VersionedTransaction.deserialize(Buffer.from(swapTransaction, 'base64'));
+        const signature = await sendTransaction(transaction, connection, {
+          skipPreflight: false,
+          maxRetries: 3,
+          preflightCommitment: "confirmed"
+        });
+        
+        console.log("Transaction sent with signature:", signature);
+
+        try {
+          // Wait for transaction confirmation
+          const confirmation = await connection.confirmTransaction(signature, "confirmed");
+          console.log("Transaction confirmation:", confirmation);
+
+          if (confirmation.value.err) {
+            throw new Error(`Transaction failed: ${confirmation.value.err}`);
+          }
+          console.log("Transaction confirmed successfully!");
+          setSuccessSignature(signature);
+          // Get transaction details
+          try {
+            const tx = await connection.getTransaction(signature, {
+              maxSupportedTransactionVersion: 0,
+            });
+            console.log("Transaction details (if available):", tx);
+          } catch (detailsError) {
+            console.log("Note: Could not fetch transaction details, but transaction was confirmed");
+          }
+        } catch (error) {
+          console.error("Error confirming transaction:", error);
+          throw new Error(`Transaction failed to confirm: ${error.message}`);
+        }
+      } else {
+        // Original delayed unstake logic
+        if (
+          !stakeAmount ||
+          isNaN(Number(stakeAmount)) ||
+          Number(stakeAmount) <= 0
+        ) {
+          setErrorMessage("Please enter a valid stake amount.");
+          return;
+        }
+
+        const lamports = (Number(stakeAmount) * 1e9).toString();
+        const userPublicKey = new PublicKey(publicKey);
+        const transactionSig = await unstake(
+          lamports,
+          userPublicKey,
+          wallet,
+          sendTransaction,
+          connected,
+          priorityFee
+        );
+        if (transactionSig) {
+          setSuccessSignature(transactionSig);
+        }
       }
     } catch (error) {
-      console.error("Error during deposit:", error);
-      setErrorMessage("Transaction failed.");
+      console.error("Error during unstake:", error);
+      setErrorMessage(error.message || "Transaction failed. Please try again.");
     } finally {
+      setIsSwapping(false);
       setStakeAmount("");
     }
   };
@@ -407,6 +516,47 @@ export default function StakeUnstakeComponent({
       setSsolDollarPrice(Number(ssolInDollars.toFixed(2)));
     }
   }, [solPrice, ssolPrice]);
+
+  const getJupiterQuote = async (inputAmount: number) => {
+    try {
+      if (!publicKey || !wallet || !inputAmount || inputAmount <= 0) return null;
+
+      const { connection, program } = initConfig(wallet, publicKey);
+      const stateAccountData = await getStateAccountData(program);
+      const sSolMint = stateAccountData.ssolMint;
+
+      // Use Jupiter API directly
+      const lamportAmount = Math.floor(inputAmount * LAMPORTS_PER_SOL);
+      const response = await fetch(
+        `https://quote-api.jup.ag/v6/quote?inputMint=${sSolMint.toString()}&outputMint=${process.env.NEXT_PUBLIC_SOLANA_ADDRESS}&amount=${lamportAmount}&slippageBps=50`
+      );
+      
+      if (!response.ok) {
+        throw new Error('Failed to get Jupiter quote');
+      }
+
+      const quoteData = await response.json();
+      const outAmount = Number(quoteData.outAmount) / LAMPORTS_PER_SOL;
+      setJupiterQuote(outAmount);
+      return outAmount;
+    } catch (error) {
+      console.error("Error getting Jupiter quote:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    if (selectedOption === "immediate" && stakeAmount) {
+      const amount = parseFloat(stakeAmount);
+      if (!isNaN(amount) && amount > 0) {
+        getJupiterQuote(amount);
+      } else {
+        setJupiterQuote(null);
+      }
+    } else {
+      setJupiterQuote(null);
+    }
+  }, [stakeAmount, selectedOption]);
 
   return (
     <div className="flex flex-col items-center bg-[#ede9f7] dark:bg-black py-8 px-4">
@@ -733,9 +883,11 @@ export default function StakeUnstakeComponent({
                     </span>
                   </div>
                   <span className="text-[#6F5DA8]">
-                    {selectedOption === "delayed" && stakeAmount && ssolPrice
-                      ? (Number(stakeAmount) * (ssolPrice || 0)).toFixed(6)
-                      : ""}
+                    {stakeAmount && (
+                      selectedOption === "delayed" 
+                        ? (Number(stakeAmount) * (ssolPrice || 0)).toFixed(6)
+                        : jupiterQuote?.toFixed(6) || (Number(stakeAmount) * (ssolPrice || 0)).toFixed(6)
+                    )}
                   </span>
                 </div>
               </div>
@@ -744,14 +896,21 @@ export default function StakeUnstakeComponent({
               <div className="mt-4 flex justify-center">
                 <button
                   className={`w-full py-3 rounded-full font-bold text-lg ${
-                    publicKey
+                    publicKey && !isSwapping
                       ? "bg-[#6F5DA8] text-[#F8EBD0] cursor-pointer"
                       : "bg-gray-400 text-gray-300 cursor-not-allowed"
                   }`}
                   onClick={handleUnstake}
-                  disabled={!publicKey}
+                  disabled={!publicKey || isSwapping}
                 >
-                  Unstake SOL
+                  {isSwapping ? (
+                    <div className="flex items-center justify-center">
+                      <span className="mr-2">Swapping via Jupiter</span>
+                      <div className="animate-spin h-5 w-5 border-2 border-[#F8EBD0] border-t-transparent rounded-full"></div>
+                    </div>
+                  ) : (
+                    "Unstake SOL"
+                  )}
                 </button>
               </div>
             </div>
