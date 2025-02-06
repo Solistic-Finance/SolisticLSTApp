@@ -588,7 +588,7 @@ export default function StakeUnstakeComponent({
             >
               <span className="relative">Stake</span>
               <span className="bg-[#6F5DA8] text-white text-[8px] py-1 px-2 rounded-md font-poppins">
-                ≈ 8.04% APY
+                ≈ 9.54% APY
               </span>
             </button>
           </div>
