@@ -21,6 +21,7 @@ const Navbar = () => {
         {/* Left side logo */}
         <div className="flex-1 flex items-center">
           {/* Light Mode Logo for Mobile */}
+          <a href="https://www.solistic.finance/" target="_blank" rel="noopener noreferrer">
           <img
             src="/logo-light-mobile.png"
             alt="Logo Light Mobile"
@@ -44,6 +45,7 @@ const Navbar = () => {
             alt="Logo Dark Desktop"
             className="hidden sm:dark:block sm:hidden h-8"
           />
+          </a>
         </div>
 
         {/* Right side buttons */}
