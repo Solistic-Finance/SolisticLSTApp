@@ -18,8 +18,8 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  title: "Solistice Finance",
-  description: "Solistice Finance",
+  title: "Solistic Finance",
+  description: "Solistic Finance",
 };
 
 export default function RootLayout({ children }) {
