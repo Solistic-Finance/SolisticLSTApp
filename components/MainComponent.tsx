@@ -58,7 +58,10 @@ export default function MainComponent() {
           <p className="text-sm md:text-base lg:text-sm font-poppins text-[#3A3A3A] dark:text-gray-500 mt-2 text-start ml-4">
             When you stake SOL tokens in order to receive <br /> sSOL tokens,
             you receive a slightly lower amount <br /> of sSOL.{" "}
-            <span className="text-[#6F5DA8] dark:text-[#CCBDFC] font-poppins-600 cursor-pointer">
+            <span 
+              className="text-[#6F5DA8] dark:text-[#CCBDFC] font-poppins-600 cursor-pointer"
+              onClick={() => window.open('https://docs.solistic.finance/staking-and-restaking/quickstart', '_blank')}
+            >
               Learn more
             </span>
           </p>
