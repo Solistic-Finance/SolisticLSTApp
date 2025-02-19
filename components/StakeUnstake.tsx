@@ -50,6 +50,7 @@ export default function StakeUnstakeComponent({
   const [ssolDollarPrice, setSsolDollarPrice] = useState<number | null>(null);
   const [jupiterQuote, setJupiterQuote] = useState<number | null>(null);
   const [isSwapping, setIsSwapping] = useState(false);
+  const [apy, setApy] = useState<number | null>(null);
 
   const handleChangeOverlay = () => {
     setIsOverlayVisible(!isOverlayVisible); // Toggle the overlay visibility
@@ -438,6 +439,25 @@ export default function StakeUnstakeComponent({
     };
   }, []);
 
+  useEffect(() => {
+    const fetchApy = async () => {
+      try {
+        const response = await fetch('https://alpha-api.solistic.finance/state/apy',{
+          headers: {
+            'x-api-key': process.env.NEXT_PUBLIC_SOLISTIC_API_KEY
+          }
+        });
+        const data = await response.json();
+        const apyValue = Number(data.data.apy.replace('%', ''));
+        setApy(apyValue);
+      } catch (error) {
+        console.error('Error fetching APY:', error);
+      }
+    };
+
+    fetchApy();
+  }, []);
+
   const fetchSsolPrice = async () => {
     try {
       const response = await fetch('https://alpha-api.solistic.finance/state/ssol-price', {
@@ -588,7 +608,7 @@ export default function StakeUnstakeComponent({
             >
               <span className="relative">Stake</span>
               <span className="bg-[#6F5DA8] text-white text-[8px] py-1 px-2 rounded-md font-poppins">
-                ≈ 9.54% APY
+                ≈ {apy !== null ? `${apy.toString().split('.')[0]}.${apy.toString().split('.')[1]?.substring(0, 2)}% APY` : 'Loading...'}
               </span>
             </button>
           </div>
